@@ -1,0 +1,66 @@
+<!-- MAIN DASHBOARD TAB VIEW: DEDICATED CAMPUS 3D BUILDING MAP -->
+<div id="view-dashboard" class="dashboard-workspace-grid view-3d-active" data-view-mode="3d">
+
+    <!-- Campus 3D Workspace Card -->
+    <div class="canvas-card" id="canvas-card-wrapper" style="grid-column: 1 / -1; width: 100%;">
+        <!-- Unified Campus Canvas Toolbar -->
+        <div class="canvas-toolbar">
+            <!-- Left: Campus Overview Telemetry Chip -->
+            <div class="canvas-toolbar-left">
+                <div class="campus-stat-chip" id="campus-stat-chip">
+                    <i data-lucide="building-2" style="color: var(--blue); width: 14px; height: 14px; flex-shrink: 0;"></i>
+                    <span id="campus-summary-stat">3 Buildings • 6 Floors • 8 Active Sensors</span>
+                </div>
+            </div>
+
+            <!-- Right: Campus Actions & Camera Presets -->
+            <div class="canvas-toolbar-right">
+                <div class="stage-camera-bar" id="campus-camera-bar" style="position: static; margin-right: 6px;">
+                    <button type="button" class="stage-cam-btn on" data-v="iso" onclick="setCampusCameraView('iso')">Isometric</button>
+                    <button type="button" class="stage-cam-btn" data-v="top" onclick="setCampusCameraView('top')">Top</button>
+                    <button type="button" class="stage-cam-btn" data-v="side" onclick="setCampusCameraView('side')">Side</button>
+                    <button type="button" class="stage-cam-btn" id="ta-campus" onclick="toggleCampusAutoRotate()">Auto-rotate</button>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline" onclick="toggleCampusLabels()" id="btn-toggle-labels" title="Toggle Detail Labels">
+                    <i data-lucide="tag"></i> <span id="label-toggle-text">Labels</span>
+                </button>
+                <button type="button" class="btn btn-sm btn-primary" onclick="openAddBuildingModal()" title="Add New Building">
+                    <i data-lucide="plus"></i> <span>Add Building</span>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline" onclick="openCampusManagerModal()" title="Manage Campus Directory">
+                    <i data-lucide="layers"></i> <span class="tb-label">Manage Campus</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- VIEW: 3D CAMPUS BUILDING MAP STAGE             -->
+        <!-- ============================================== -->
+        <div class="campus-3d-wrapper" id="campus-3d-wrapper">
+            <div class="stage" id="stage-campus">
+                <!-- 3D Transform Scene Root (preserve-3d) -->
+                <div id="scene-campus" class="scene-3d">
+                    <div id="campus"></div>
+                </div>
+
+                <!-- Floating Zoom & Fit Controls for Campus 3D -->
+                <div class="canvas-grouped-pill" id="campus-zoom-pill" onpointerdown="event.stopPropagation()">
+                    <button type="button" class="btn-zoom-icon" onclick="fitCampus3DView()" title="Fit to Screen"><i data-lucide="maximize-2"></i></button>
+                    <div class="btn-zoom-sep"></div>
+                    <button type="button" class="btn-zoom-icon" id="btn-campus-zoom-out" onclick="zoomCampus3D(-0.15)" title="Zoom Out"><i data-lucide="minus"></i></button>
+                    <span id="campus-zoom-level-text" class="zoom-level-label">85%</span>
+                    <button type="button" class="btn-zoom-icon" id="btn-campus-zoom-in" onclick="zoomCampus3D(0.15)" title="Zoom In"><i data-lucide="plus"></i></button>
+                    <div class="btn-zoom-sep"></div>
+                    <button type="button" class="btn-zoom-icon" onclick="resetCampus3DZoom()" title="Reset View"><i data-lucide="locate-fixed"></i></button>
+                </div>
+
+                <!-- Click-to-Enter Quick Fade Transition Veil Overlay -->
+                <div class="veil" id="veil-campus"></div>
+
+                <!-- Interactive Context Hint (Bottom Left) -->
+                <div class="hint" id="hint-campus">Click any building to open its Floor Plan • Drag to rotate • Scroll to zoom</div>
+            </div>
+        </div>
+    </div>
+
+</div>

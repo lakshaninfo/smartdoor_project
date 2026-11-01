@@ -1,0 +1,386 @@
+<!-- ADVANCED DATABASE MANAGEMENT STUDIO (ADMIN SUPERUSER CLEARANCE ONLY) -->
+<div class="view-page-container hidden" id="view-database-page">
+    <div class="db-studio-container">
+        
+        <!-- Top Studio Ribbon Header -->
+        <div class="db-studio-header">
+            <div class="db-header-left">
+                <div class="db-brand-icon">
+                    <i data-lucide="database"></i>
+                </div>
+                <div>
+                    <div class="db-title-wrap">
+                        <h2 class="db-title">Database Studio</h2>
+                        <span class="db-badge-engine">SQLite 3 • LIVE POOL</span>
+                        <span class="db-badge-admin"><i data-lucide="shield-check"></i> ADMIN CONSOLE</span>
+                    </div>
+                    <div class="db-telemetry-sub" id="db-telemetry-summary">
+                        Loading database catalog telemetry...
+                    </div>
+                </div>
+            </div>
+
+            <div class="db-header-actions">
+                <button type="button" class="db-btn db-btn-secondary" onclick="openDbSqlTab()" title="Open Raw SQL Editor">
+                    <i data-lucide="terminal"></i>
+                    <span>SQL Console</span>
+                </button>
+                <a href="/api/database/backup" class="db-btn db-btn-secondary" title="Download Complete .sqlite3 Binary Backup" download>
+                    <i data-lucide="download"></i>
+                    <span>Download Backup</span>
+                </a>
+                <button type="button" class="db-btn db-btn-primary" onclick="refreshDatabaseStudio()" title="Refresh Catalog & Schema">
+                    <i data-lucide="rotate-cw"></i>
+                    <span>Refresh</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Studio Grid: Left Table Explorer + Right Active Workspace -->
+        <div class="db-workspace-grid">
+            
+            <!-- Left: Table Catalog Explorer -->
+            <div class="db-explorer-sidebar">
+                <div class="db-explorer-top">
+                    <div class="db-explorer-title-bar">
+                        <div class="db-explorer-title">
+                            <i data-lucide="layers"></i>
+                            <span>Catalog Tables</span>
+                            <span class="db-count-pill" id="db-tables-count">0</span>
+                        </div>
+                        <button type="button" class="db-btn-icon-sm" onclick="openCreateTableModal()" title="Create New Table">
+                            <i data-lucide="plus"></i>
+                        </button>
+                    </div>
+                    <div class="db-search-input-wrap">
+                        <i data-lucide="search"></i>
+                        <input type="text" id="db-table-filter" placeholder="Filter tables..." oninput="filterDbTableList()" />
+                    </div>
+                </div>
+
+                <!-- Scrollable Table Items List -->
+                <div class="db-table-list" id="db-table-items-container">
+                    <div class="db-loading-state">
+                        <i data-lucide="loader-2" class="spin-icon"></i>
+                        <span>Loading tables...</span>
+                    </div>
+                </div>
+
+                <!-- Database Host Telemetry Card -->
+                <div class="db-specs-card">
+                    <div class="db-spec-row">
+                        <span class="db-spec-label">Storage Engine</span>
+                        <span class="db-spec-value" id="db-spec-engine">SQLite 3</span>
+                    </div>
+                    <div class="db-spec-row">
+                        <span class="db-spec-label">File Size</span>
+                        <span class="db-spec-value" id="db-spec-size">--</span>
+                    </div>
+                    <div class="db-spec-row">
+                        <span class="db-spec-label">Total Records</span>
+                        <span class="db-spec-value" id="db-spec-total-rows">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Active Table Data & Management Workspace -->
+            <div class="db-workspace-main">
+                
+                <!-- Workspace Tabs -->
+                <div class="db-nav-tabs-bar">
+                    <div class="db-tabs-left">
+                        <button type="button" class="db-tab-btn active" id="db-tab-browse" onclick="switchDbWorkspaceTab('browse')">
+                            <i data-lucide="table"></i>
+                            <span>Browse Records</span>
+                        </button>
+                        <button type="button" class="db-tab-btn" id="db-tab-structure" onclick="switchDbWorkspaceTab('structure')">
+                            <i data-lucide="cpu"></i>
+                            <span>Structure & Schema</span>
+                        </button>
+                        <button type="button" class="db-tab-btn" id="db-tab-sql" onclick="switchDbWorkspaceTab('sql')">
+                            <i data-lucide="terminal"></i>
+                            <span>SQL Query Console</span>
+                        </button>
+                    </div>
+
+                    <div class="db-tabs-right" id="db-table-meta-pills">
+                        <span class="db-active-table-name" id="db-current-table-label">No table selected</span>
+                    </div>
+                </div>
+
+                <!-- Tab 1: Browse Records Data Grid -->
+                <div class="db-tab-content" id="db-pane-browse">
+                    <!-- Action Toolbar -->
+                    <div class="db-data-toolbar">
+                        <div class="db-toolbar-left">
+                            <button type="button" class="db-btn db-btn-success" onclick="openInsertRowModal()">
+                                <i data-lucide="plus-circle"></i>
+                                <span>Insert Record</span>
+                            </button>
+                            <button type="button" class="db-btn db-btn-danger hidden" id="db-btn-batch-delete" onclick="deleteSelectedDbRows()">
+                                <i data-lucide="trash-2"></i>
+                                <span>Delete Selected (<span id="db-selected-count">0</span>)</span>
+                            </button>
+                            <div class="db-table-search-wrap">
+                                <i data-lucide="search"></i>
+                                <input type="text" id="db-record-search-input" placeholder="Search rows in table..." onkeyup="if(event.key==='Enter') executeDbTableSearch()" />
+                                <button type="button" class="db-btn-text" onclick="executeDbTableSearch()">Search</button>
+                            </div>
+                        </div>
+
+                        <div class="db-toolbar-right">
+                            <div class="db-dropdown-wrap">
+                                <button type="button" class="db-btn db-btn-secondary" onclick="toggleDbExportMenu()">
+                                    <i data-lucide="file-output"></i>
+                                    <span>Export</span>
+                                    <i data-lucide="chevron-down" style="width: 13px; height: 13px;"></i>
+                                </button>
+                                <div class="db-export-menu hidden" id="db-export-dropdown">
+                                    <button type="button" onclick="exportCurrentTable('csv')">
+                                        <i data-lucide="file-spreadsheet"></i> Export as CSV
+                                    </button>
+                                    <button type="button" onclick="exportCurrentTable('json')">
+                                        <i data-lucide="file-code"></i> Export as JSON
+                                    </button>
+                                </div>
+                            </div>
+                            <button type="button" class="db-btn db-btn-secondary" onclick="confirmTruncateCurrentTable()" title="Empty all rows from this table">
+                                <i data-lucide="eraser"></i>
+                                <span>Truncate</span>
+                            </button>
+                            <button type="button" class="db-btn db-btn-danger-outline" onclick="confirmDropCurrentTable()" title="Delete entire table">
+                                <i data-lucide="trash"></i>
+                                <span>Drop Table</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Scrollable Data Table Container -->
+                    <div class="db-grid-scroll-box" id="db-grid-container">
+                        <table class="db-data-table" id="db-active-data-table">
+                            <thead id="db-table-thead">
+                                <tr><th>Select a table from the catalog</th></tr>
+                            </thead>
+                            <tbody id="db-table-tbody">
+                                <tr><td>No table selected.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination Navigation Footer -->
+                    <div class="db-pagination-bar">
+                        <div class="db-pagination-info" id="db-pagination-summary">
+                            Showing 0 records
+                        </div>
+
+                        <div class="db-pagination-controls">
+                            <div class="db-page-size-picker">
+                                <span>Rows:</span>
+                                <select id="db-page-size-select" onchange="changeDbPageSize(this.value)">
+                                    <option value="15">15</option>
+                                    <option value="25" selected>25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                            </div>
+
+                            <button type="button" class="db-page-btn" id="db-page-prev" onclick="navigateDbPage(-1)" disabled>
+                                <i data-lucide="chevron-left"></i>
+                            </button>
+                            <span class="db-page-counter" id="db-page-current-label">Page 1 of 1</span>
+                            <button type="button" class="db-page-btn" id="db-page-next" onclick="navigateDbPage(1)" disabled>
+                                <i data-lucide="chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Table Structure & Schema Inspector -->
+                <div class="db-tab-content hidden" id="db-pane-structure">
+                    <div class="db-structure-header">
+                        <div>
+                            <h3 class="db-structure-title" id="db-structure-table-name">Table Schema</h3>
+                            <p class="db-structure-sub">Inspect column types, constraints, default values and primary keys.</p>
+                        </div>
+                    </div>
+
+                    <div class="db-grid-scroll-box">
+                        <table class="db-schema-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 60px;">#</th>
+                                    <th>Column Name</th>
+                                    <th>Data Type</th>
+                                    <th>Constraint</th>
+                                    <th>Default Value</th>
+                                    <th>Key Role</th>
+                                </tr>
+                            </thead>
+                            <tbody id="db-schema-tbody">
+                                <tr><td colspan="6">Loading schema...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Interactive SQL Query Console -->
+                <div class="db-tab-content hidden" id="db-pane-sql">
+                    <div class="db-sql-editor-container">
+                        <div class="db-sql-toolbar">
+                            <span class="db-sql-label"><i data-lucide="code-2"></i> SQL Statement Studio</span>
+                            <div class="db-sql-templates">
+                                <span class="db-sql-templates-label">Quick Snippets:</span>
+                                <button type="button" class="db-chip" onclick="insertSqlTemplate('select_logs')">Recent Logs</button>
+                                <button type="button" class="db-chip" onclick="insertSqlTemplate('logs_by_door')">Door Statistics</button>
+                                <button type="button" class="db-chip" onclick="insertSqlTemplate('users')">System Users</button>
+                                <button type="button" class="db-chip" onclick="insertSqlTemplate('table_info')">Schema Info</button>
+                            </div>
+                        </div>
+
+                        <!-- Monospace Query Textarea -->
+                        <textarea class="db-sql-textarea" id="db-sql-input" placeholder="SELECT * FROM logger_doorlog ORDER BY timestamp DESC LIMIT 25;" spellcheck="false" onkeydown="if((event.ctrlKey || event.metaKey) && event.key==='Enter') executeRawSqlQuery()"></textarea>
+
+                        <div class="db-sql-bottom-bar">
+                            <span class="db-sql-hint">Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to execute</span>
+                            <div class="db-sql-buttons">
+                                <button type="button" class="db-btn db-btn-secondary" onclick="document.getElementById('db-sql-input').value = ''">Clear</button>
+                                <button type="button" class="db-btn db-btn-primary" onclick="executeRawSqlQuery()" id="db-btn-run-sql">
+                                    <i data-lucide="play"></i>
+                                    <span>Execute Query</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SQL Execution Result Banner -->
+                    <div class="db-sql-result-wrap" id="db-sql-result-container">
+                        <div class="db-sql-empty-prompt">
+                            <i data-lucide="play-circle"></i>
+                            <p>Write an SQL statement above and click <strong>Execute Query</strong> to view live results.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ========================================================
+     DATABASE MODALS: INSERT RECORD, EDIT RECORD, CREATE TABLE
+     ======================================================== -->
+
+<!-- Modal: Insert Record -->
+<div class="system-modal-backdrop hidden" id="modal-db-insert">
+    <div class="system-modal-card db-modal-wide">
+        <div class="modal-header">
+            <div class="modal-header-icon" style="background: rgba(16, 185, 129, 0.12); color: #10b981;">
+                <i data-lucide="plus-circle"></i>
+            </div>
+            <div>
+                <h3 class="modal-title">Insert Record</h3>
+                <p class="modal-sub" id="modal-db-insert-sub">Add a new row to table</p>
+            </div>
+            <button type="button" class="modal-close-btn" onclick="closeDbModal('modal-db-insert')">&times;</button>
+        </div>
+        <form id="form-db-insert" onsubmit="submitInsertDbRow(event)">
+            <div class="modal-body db-form-grid" id="db-insert-fields-container">
+                <!-- Dynamically generated fields matching schema -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-modal-cancel" onclick="closeDbModal('modal-db-insert')">Cancel</button>
+                <button type="submit" class="btn-modal-primary" id="btn-submit-db-insert">Save Record</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal: Edit Record -->
+<div class="system-modal-backdrop hidden" id="modal-db-edit">
+    <div class="system-modal-card db-modal-wide">
+        <div class="modal-header">
+            <div class="modal-header-icon" style="background: rgba(37, 99, 235, 0.12); color: #2563eb;">
+                <i data-lucide="edit-3"></i>
+            </div>
+            <div>
+                <h3 class="modal-title">Edit Record</h3>
+                <p class="modal-sub" id="modal-db-edit-sub">Update column values</p>
+            </div>
+            <button type="button" class="modal-close-btn" onclick="closeDbModal('modal-db-edit')">&times;</button>
+        </div>
+        <form id="form-db-edit" onsubmit="submitUpdateDbRow(event)">
+            <input type="hidden" id="db-edit-pk-col" />
+            <input type="hidden" id="db-edit-pk-val" />
+            <div class="modal-body db-form-grid" id="db-edit-fields-container">
+                <!-- Dynamically generated fields matching schema -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-modal-cancel" onclick="closeDbModal('modal-db-edit')">Cancel</button>
+                <button type="submit" class="btn-modal-primary" id="btn-submit-db-edit">Update Record</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal: Create New Table -->
+<div class="system-modal-backdrop hidden" id="modal-db-create-table">
+    <div class="system-modal-card db-modal-wide">
+        <div class="modal-header">
+            <div class="modal-header-icon" style="background: rgba(147, 51, 234, 0.12); color: #9333ea;">
+                <i data-lucide="folder-plus"></i>
+            </div>
+            <div>
+                <h3 class="modal-title">Create Database Table</h3>
+                <p class="modal-sub">Define table name and schema columns</p>
+            </div>
+            <button type="button" class="modal-close-btn" onclick="closeDbModal('modal-db-create-table')">&times;</button>
+        </div>
+        <form id="form-db-create-table" onsubmit="submitCreateTable(event)">
+            <div class="modal-body" style="display: flex; flex-direction: column; gap: 14px;">
+                <div class="db-input-group">
+                    <label class="db-label">Table Name</label>
+                    <input type="text" id="db-new-table-name" class="db-input" placeholder="e.g. system_audit_archive" required pattern="^[a-zA-Z0-9_]+$" title="Only alphanumeric and underscore allowed" />
+                </div>
+
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span class="db-label" style="margin: 0;">Table Columns</span>
+                        <button type="button" class="db-btn-text" onclick="addDbColumnRow()">+ Add Column</button>
+                    </div>
+                    <div id="db-new-columns-container" style="display: flex; flex-direction: column; gap: 8px; max-height: 240px; overflow-y: auto;">
+                        <!-- Column row templates will be added here -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-modal-cancel" onclick="closeDbModal('modal-db-create-table')">Cancel</button>
+                <button type="submit" class="btn-modal-primary">Create Table</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal: Safety Confirmation (Truncate / Drop) -->
+<div class="system-modal-backdrop hidden" id="modal-db-confirm">
+    <div class="system-modal-card" style="max-width: 440px;">
+        <div class="modal-header">
+            <div class="modal-header-icon" style="background: rgba(239, 68, 68, 0.12); color: #ef4444;">
+                <i data-lucide="alert-triangle"></i>
+            </div>
+            <div>
+                <h3 class="modal-title" id="db-confirm-title">Confirm Action</h3>
+                <p class="modal-sub" id="db-confirm-sub">This operation cannot be undone</p>
+            </div>
+            <button type="button" class="modal-close-btn" onclick="closeDbModal('modal-db-confirm')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p id="db-confirm-message" style="margin: 0; font-size: 13.5px; line-height: 1.5; color: var(--text-primary);"></p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-modal-cancel" onclick="closeDbModal('modal-db-confirm')">Cancel</button>
+            <button type="button" class="btn-modal-danger" id="btn-db-confirm-action">Confirm & Proceed</button>
+        </div>
+    </div>
+</div>
+

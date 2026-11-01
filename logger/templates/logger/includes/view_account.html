@@ -1,0 +1,80 @@
+<!-- DEDICATED ACCOUNT & PROFILE VIEW (APPLE INSET POLISHED) -->
+<div id="view-account-page" class="view-page-container hidden">
+    <div class="in-polished" style="max-width: 760px;">
+
+        <!-- Page Header -->
+        <div class="ph">
+            <div>
+                <h1>Account</h1>
+            </div>
+        </div>
+
+        <!-- User Profile Card -->
+        <div class="inset prof">
+            <span class="av" id="acc-avatar-letter">{{ user.username|first|upper|default:"?" }}</span>
+            <div>
+                <h2 id="acc-display-username">{{ user.username|default:"Guest" }}</h2>
+                <p id="acc-user-email-meta">{{ user.email|default:"Not signed in" }}</p>
+                <p id="acc-date-joined">{% if user.is_authenticated %}Member since {{ user.date_joined|date:"M j, Y" }}{% else %}Guest session{% endif %}</p>
+                <span class="pill{% if user.is_superuser %} blue{% endif %}" id="acc-role-pill">
+                    <i data-lucide="shield" class="ic" style="width: 12px; height: 12px;"></i>
+                    <span id="acc-role-text">{% if user.is_superuser %}Administrator{% elif user.is_authenticated %}Operator{% else %}Guest{% endif %}</span>
+                </span>
+            </div>
+        </div>
+
+        <!-- Manage Group -->
+        <div class="grp">MANAGE</div>
+        <div class="inset">
+            <button type="button" class="row" onclick="switchMainTab('users')">
+                <span class="ico" style="background: color-mix(in srgb, var(--blue, #007aff) 14%, transparent); color: var(--blue, #007aff);">
+                    <i data-lucide="users" class="ic"></i>
+                </span>
+                <span class="m">
+                    <b>Users and roles</b>
+                    <span id="acc-users-count-meta">Manage team accounts & permissions</span>
+                </span>
+                <i data-lucide="chevron-right" class="ch"></i>
+            </button>
+            <button type="button" class="row{% if not user.is_superuser %} hidden{% endif %}" id="acc-database-link" onclick="switchMainTab('database')">
+                <span class="ico" style="background: color-mix(in srgb, #af52de 14%, transparent); color: #af52de;">
+                    <i data-lucide="database" class="ic"></i>
+                </span>
+                <span class="m">
+                    <b>Database Studio</b>
+                    <span>Inspect SQLite schema & raw tables</span>
+                </span>
+                <i data-lucide="chevron-right" class="ch"></i>
+            </button>
+        </div>
+
+        <!-- Appearance Group -->
+        <div class="grp">APPEARANCE</div>
+        <div class="inset" style="padding: 14px 16px;">
+            <div class="seg" role="tablist">
+                <button type="button" role="tab" id="theme-btn-light" aria-selected="false" onclick="setAppTheme('light')">Light</button>
+                <button type="button" role="tab" id="theme-btn-dark" aria-selected="false" onclick="setAppTheme('dark')">Dark</button>
+                <button type="button" role="tab" id="theme-btn-auto" aria-selected="true" onclick="setAppTheme('auto')">Auto</button>
+            </div>
+        </div>
+
+        <!-- Session Group -->
+        <div class="grp">SESSION</div>
+        <div class="inset">
+            <button type="button" class="row" onclick="openSwitchAccountModal()">
+                <span class="ico" style="background: var(--fill, rgba(118,118,128,.14)); color: var(--ink2, #6c6c70);">
+                    <i data-lucide="arrow-left-right" class="ic"></i>
+                </span>
+                <span class="m"><b>Switch account</b></span>
+                <i data-lucide="chevron-right" class="ch"></i>
+            </button>
+            <button type="button" class="row" onclick="performLogout()" style="color: var(--red, #ff3b30);">
+                <span class="ico bad">
+                    <i data-lucide="log-out" class="ic"></i>
+                </span>
+                <span class="m"><b>Sign out</b></span>
+            </button>
+        </div>
+
+    </div>
+</div>

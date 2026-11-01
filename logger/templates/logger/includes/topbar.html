@@ -1,0 +1,109 @@
+<!-- TOPBAR: Responsive Header (Desktop Security Console / Tablet Workstation / Mobile App Bar) -->
+<header class="app-topbar">
+    <!-- Left: Current Page Title -->
+    <div class="topbar-title-wrap">
+        <div class="topbar-title" id="topbar-page-title">
+            <i data-lucide="building-2"></i>
+            <span>Campus 3D Overview</span>
+        </div>
+        <!-- Mobile Live Security Badge (Visible on mobile only in left title area) -->
+        <div class="header-status-cluster mobile-only-kpi" id="topbar-mobile-status" title="System Security Status">
+            <span class="live-pulse-dot" id="mob-live-dot"></span>
+            <i data-lucide="shield-check" style="width: 13px; height: 13px; color: var(--green);" id="mob-shield-icon"></i>
+            <span class="cluster-state state-secured" id="topbar-mobile-status-text">SECURED</span>
+        </div>
+    </div>
+
+    <!-- Center: Real-time KPI Status Cluster + Active Devices Count + Last-Sync Indicator -->
+    <div class="topbar-center">
+        <div class="header-status-cluster" id="kpi-security-pill">
+            <span class="live-pulse-dot" id="kpi-pulse-dot"></span>
+            <i data-lucide="shield-check" style="width: 14px; height: 14px; color: var(--green);" id="kpi-shield-icon"></i>
+            <span class="cluster-state state-secured" id="stat-security-status">SYSTEM SECURED</span>
+        </div>
+        <div class="kpi-pill kpi-pill-blue" style="margin-left: 8px;" id="kpi-active-pill">
+            <i data-lucide="radio"></i>
+            <span id="stat-active-count">0 Active</span>
+        </div>
+        <!-- Last-sync timestamp -->
+        <div class="topbar-sync-text" id="topbar-last-sync" title="Last telemetry refresh">
+            <i data-lucide="clock-4"></i>
+            <span id="last-sync-label">—</span>
+        </div>
+    </div>
+
+    <!-- Right: Appearance Toggle + Notification Center + User Profile Avatar -->
+    <div class="topbar-actions">
+        <!-- Appearance & Dark Mode Toggle -->
+        <button class="dark-mode-btn" id="dark-mode-toggle" onclick="toggleDarkMode(event)" title="Toggle Appearance (Double-click or Alt+Click for System Trait Auto-Sync)" type="button" aria-label="Toggle dark mode">
+            <i data-lucide="moon" id="dark-mode-icon"></i>
+            <span class="trait-auto-pill hidden" id="dark-mode-auto-dot" title="Auto System Trait Tracking Active"></span>
+        </button>
+
+        <!-- Notification Bell with Notification Center Dropdown -->
+        <div style="position: relative;">
+            <button class="icon-btn" id="notif-btn" onclick="toggleNotifDropdown(event)" title="Notifications" type="button" aria-label="Notifications">
+                <i data-lucide="bell"></i>
+                <span class="dot-badge hidden" id="notif-dot"></span>
+                <span class="notif-count-badge hidden" id="notif-count-badge">0</span>
+            </button>
+            <div class="notif-dropdown-card hidden" id="notif-dropdown" onclick="event.stopPropagation()">
+                <div class="notif-header">
+                    <div class="notif-title">
+                        <i data-lucide="bell" style="width: 14px; height: 14px; color: var(--blue);"></i>
+                        <span>Alerts &amp; Notifications</span>
+                    </div>
+                    <button class="notif-clear-btn" onclick="markAllNotifsRead()">Mark read</button>
+                </div>
+                <div class="notif-list" id="notif-list-container">
+                    <!-- Dynamic notification rows -->
+                </div>
+                <div class="notif-footer" onclick="switchMainTab('logs'); toggleNotifDropdown(event);">
+                    <span>View full access logs &rarr;</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Avatar & Profile Dropdown Container -->
+        <div style="position: relative;">
+            <button class="user-avatar-btn" onclick="toggleUserDropdown(event)" title="User Account" type="button" aria-label="User Account">
+                <div class="user-avatar-circle" id="header-avatar-initials">?</div>
+                <span class="user-avatar-name" id="header-username-display">Guest</span>
+                <i data-lucide="chevron-down" class="avatar-chevron"></i>
+            </button>
+
+            <!-- User Profile Dropdown Card -->
+            <div class="user-dropdown-card hidden" id="user-dropdown" onclick="event.stopPropagation()">
+                <!-- User Info Header -->
+                <div class="dropdown-user-header">
+                    <div class="user-avatar-circle dropdown-user-avatar" id="dropdown-avatar-circle">?</div>
+                    <div class="dropdown-user-meta">
+                        <div class="dropdown-username" id="dropdown-username">Guest</div>
+                        <div class="dropdown-email" id="dropdown-email">Guest User</div>
+                    </div>
+                </div>
+
+                <!-- Dropdown Menu Items -->
+                <div class="dropdown-menu-body">
+                    <div class="dropdown-menu-item" onclick="switchMainTab('account'); toggleUserDropdown();">
+                        <i data-lucide="user-circle-2" style="color: var(--blue);"></i>
+                        <span>Account Profile</span>
+                    </div>
+                    <div class="dropdown-menu-item" onclick="switchMainTab('users'); toggleUserDropdown();">
+                        <i data-lucide="users" style="color: var(--purple);"></i>
+                        <span>Users &amp; Devices</span>
+                    </div>
+                    <div class="dropdown-menu-item" onclick="openUserModal('login');">
+                        <i data-lucide="key-round"></i>
+                        <span>Switch Account</span>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-menu-item item-danger" onclick="performLogout();">
+                        <i data-lucide="log-out"></i>
+                        <span>Sign Out</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

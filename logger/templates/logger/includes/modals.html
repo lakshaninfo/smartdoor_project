@@ -1,0 +1,238 @@
+<!-- MODULAR DIALOG MODALS & OVERLAYS (Responsive: Centered Dialog on Desktop/Tablet, Bottom-Sheet on Mobile) -->
+
+<!-- 1. Authentication Modal (Login / Register / Switch Account) -->
+<div class="modal-overlay hidden" id="user-auth-modal" onclick="if(event.target===this) closeUserModal()">
+    <div class="modal-dialog modal-card" id="user-modal-card">
+        <!-- Modal Drag Pill (Mobile Bottom Sheet only) -->
+        <div class="modal-drag-pill"></div>
+
+        <div class="modal-header">
+            <div class="modal-title" id="user-modal-title">
+                <i data-lucide="shield-check" style="color: var(--blue);"></i>
+                <span id="user-modal-title-text">Account Authentication</span>
+            </div>
+            <button type="button" class="btn-modal-close" onclick="closeUserModal()" title="Close (Esc)">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+
+        <!-- Mode Tabs -->
+        <div class="modal-tabs">
+            <button type="button" class="modal-tab active" id="modal-tab-login" onclick="setUserModalMode('login')">
+                <i data-lucide="key-round"></i>
+                <span>Sign In</span>
+            </button>
+            <button type="button" class="modal-tab" id="modal-tab-register" onclick="setUserModalMode('register')">
+                <i data-lucide="user-plus"></i>
+                <span>Register</span>
+            </button>
+        </div>
+
+        <div class="modal-body">
+            <!-- Error Banner -->
+            <div class="modal-error hidden" id="modal-error-msg"></div>
+
+            <!-- Login Form -->
+            <div id="modal-login-form">
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label for="modal-input-username" class="input-label">Username</label>
+                    <input type="text" id="modal-input-username" class="modal-input" placeholder="Enter username" autocomplete="username" autocapitalize="none">
+                </div>
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="modal-input-password" class="input-label">Password</label>
+                    <div class="input-toggle-wrap">
+                        <input type="password" id="modal-input-password" class="modal-input" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter') performLogin()">
+                        <button type="button" class="btn-pwd-toggle" onclick="togglePasswordVisibility('modal-input-password', this)" title="Show/Hide password">
+                            <i data-lucide="eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary" id="modal-login-btn" onclick="performLogin()" style="width: 100%; height: 44px; justify-content: center; font-size: 14px;">
+                    <span class="btn-spinner"></span>
+                    <span class="btn-label"><i data-lucide="log-in"></i> Sign In</span>
+                </button>
+            </div>
+
+            <!-- Register Form -->
+            <div id="modal-register-form" class="hidden">
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label for="modal-reg-username" class="input-label">Username</label>
+                    <input type="text" id="modal-reg-username" class="modal-input" placeholder="Choose a username" autocomplete="username" autocapitalize="none">
+                </div>
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label for="modal-reg-email" class="input-label">Email (Optional)</label>
+                    <input type="email" id="modal-reg-email" class="modal-input" placeholder="user@example.com" autocomplete="email" autocapitalize="none">
+                </div>
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="modal-reg-password" class="input-label">Password</label>
+                    <div class="input-toggle-wrap">
+                        <input type="password" id="modal-reg-password" class="modal-input" placeholder="••••••••" autocomplete="new-password" onkeydown="if(event.key==='Enter') performRegister()">
+                        <button type="button" class="btn-pwd-toggle" onclick="togglePasswordVisibility('modal-reg-password', this)" title="Show/Hide password">
+                            <i data-lucide="eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary" id="modal-reg-btn" onclick="performRegister()" style="width: 100%; height: 44px; justify-content: center; font-size: 14px;">
+                    <span class="btn-spinner"></span>
+                    <span class="btn-label"><i data-lucide="user-plus"></i> Create Account</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- 3. PWA Install Prompt Banner (Mobile & Tablet) -->
+<div class="pwa-install-banner hidden" id="pwa-install-banner">
+    <div class="pwa-banner-left">
+        <div class="pwa-icon-box">
+            <i data-lucide="shield-check"></i>
+        </div>
+        <div class="pwa-text-group">
+            <div class="pwa-title">SmartDoor App</div>
+            <div class="pwa-sub">Add to home screen for full-screen experience</div>
+        </div>
+    </div>
+    <div class="pwa-banner-actions">
+        <button type="button" class="pwa-btn-install" id="pwa-install-btn">Install</button>
+        <button type="button" class="pwa-btn-dismiss" onclick="dismissPwaBanner()"><i data-lucide="x"></i></button>
+    </div>
+</div>
+
+<!-- 4. Campus, Buildings & Floors Categorization Manager Modal -->
+<div class="modal-overlay hidden" id="campus-manager-modal" onclick="if(event.target===this) closeCampusManagerModal()">
+    <div class="modal-dialog modal-card modal-dialog-lg" id="campus-manager-card" style="max-width: 620px; width: 100%;">
+        <div class="modal-drag-pill"></div>
+        <div class="modal-header">
+            <div class="modal-title">
+                <i data-lucide="building-2" style="color: var(--blue);"></i>
+                <span>Campus, Buildings &amp; Floors Manager</span>
+            </div>
+            <button type="button" class="btn-modal-close" onclick="closeCampusManagerModal()" title="Close (Esc)">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+
+        <!-- Manager Mode Tabs -->
+        <div class="modal-tabs">
+            <button type="button" class="modal-tab active" id="campus-tab-overview" onclick="switchCampusManagerTab('overview')">
+                <i data-lucide="layers"></i>
+                <span>Buildings &amp; Floors</span>
+            </button>
+            <button type="button" class="modal-tab" id="campus-tab-add-building" onclick="switchCampusManagerTab('add-building')">
+                <i data-lucide="plus-circle"></i>
+                <span>New Building</span>
+            </button>
+            <button type="button" class="modal-tab" id="campus-tab-add-floor" onclick="switchCampusManagerTab('add-floor')">
+                <i data-lucide="plus-square"></i>
+                <span>New Floor</span>
+            </button>
+        </div>
+
+        <div class="modal-body" style="max-height: 64vh; overflow-y: auto; padding: 18px 20px;">
+            <!-- Tab 1: Directory of Buildings & Floors -->
+            <div id="campus-panel-overview">
+                <div class="campus-dir-header">
+                    <span style="font-size: 12.5px; color: var(--text-muted);">
+                        Select any floor to inspect its 2D floor plan, or add/delete levels to alter 3D building heights.
+                    </span>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="switchCampusManagerTab('add-building')" style="margin-left: auto;">
+                        <i data-lucide="plus"></i> <span>Add Building</span>
+                    </button>
+                </div>
+                <div id="campus-directory-list" class="campus-directory-list" style="margin-top: 14px;">
+                    <!-- Injected dynamically via renderCampusDirectory() -->
+                </div>
+            </div>
+
+            <!-- Tab 2: Add New Building Form -->
+            <div id="campus-panel-add-building" class="hidden">
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label for="new-bldg-name" class="input-label">Building Name</label>
+                    <input type="text" id="new-bldg-name" class="modal-input" placeholder="e.g. West Logistics, Innovation Lab Tower, Cold Storage">
+                </div>
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label for="new-bldg-type" class="input-label">Building Type / Function</label>
+                    <select id="new-bldg-type" class="modal-input">
+                        <option value="tower">Office &amp; Tech Tower</option>
+                        <option value="warehouse">Warehouse &amp; Logistics Bay</option>
+                        <option value="lab">Research &amp; Operations Annex</option>
+                        <option value="datacenter">Data Center &amp; Server Vault</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label for="new-bldg-floors-count" class="input-label">Initial Number of Floors</label>
+                    <input type="number" id="new-bldg-floors-count" class="modal-input" value="2" min="1" max="10">
+                    <span style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px; display: block;">
+                        The 3D map building height dynamically calculates based on this floor count.
+                    </span>
+                </div>
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="new-bldg-color" class="input-label">Theme Color Accent</label>
+                    <div style="display: flex; gap: 8px; margin-top: 6px; align-items: center;">
+                        <input type="color" id="new-bldg-color" value="#2563eb" style="width: 48px; height: 38px; padding: 2px; border-radius: 6px; border: 1px solid var(--border); cursor: pointer;" onchange="document.getElementById('new-bldg-color-hex').value = this.value">
+                        <input type="text" id="new-bldg-color-hex" value="#2563eb" class="modal-input" style="flex: 1;" readonly>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="createNewBuilding()" style="width: 100%; height: 42px; justify-content: center; font-weight: 600;">
+                    <i data-lucide="plus"></i> Create Building &amp; Render 3D Model
+                </button>
+            </div>
+
+            <!-- Tab 3: Add New Floor Form -->
+            <div id="campus-panel-add-floor" class="hidden">
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label for="new-floor-bldg-select" class="input-label">Target Building</label>
+                    <select id="new-floor-bldg-select" class="modal-input">
+                        <!-- Populated dynamically via JS -->
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label for="new-floor-name" class="input-label">Floor Name</label>
+                    <input type="text" id="new-floor-name" class="modal-input" placeholder="e.g. Floor 3 - Executive Suites, Basement Storage">
+                </div>
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label for="new-floor-level" class="input-label">Floor Level Number</label>
+                    <input type="number" id="new-floor-level" class="modal-input" value="1" min="-2" max="25">
+                </div>
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="new-floor-template" class="input-label">Starter Floor Plan Layout</label>
+                    <select id="new-floor-template" class="modal-input">
+                        <option value="empty">Empty Floor (Blank Canvas)</option>
+                        <option value="office">Standard Office Suite (3 Rooms, 2 Monitored Doors)</option>
+                        <option value="copy_ground">Copy Layout from Ground Floor</option>
+                    </select>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="createNewFloor()" style="width: 100%; height: 42px; justify-content: center; font-weight: 600;">
+                    <i data-lucide="plus"></i> Add Floor &amp; Scale 3D Height
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 2. Action Confirmation Modal Dialog -->
+<div class="modal-overlay hidden" id="confirm-modal" onclick="if(event.target===this) resolveConfirmModal(false)">
+    <div class="modal-dialog modal-dialog-sm modal-card" id="confirm-modal-card">
+        <div class="modal-drag-pill"></div>
+        <div class="modal-body" style="padding: 24px 22px 20px; text-align: center;">
+            <div class="confirm-modal-icon-wrap" id="confirm-modal-icon-wrap">
+                <i data-lucide="alert-triangle" id="confirm-modal-icon" style="width: 26px; height: 26px; color: var(--red);"></i>
+            </div>
+            <h3 class="confirm-modal-title" id="confirm-modal-title">Are you sure?</h3>
+            <p class="confirm-modal-msg" id="confirm-modal-msg">This operation cannot be undone.</p>
+            <div class="confirm-modal-actions">
+                <button type="button" class="btn btn-outline" onclick="resolveConfirmModal(false)" style="flex: 1; height: 42px; justify-content: center;">
+                    Cancel
+                </button>
+                <button type="button" class="btn btn-danger" id="confirm-modal-action-btn" onclick="resolveConfirmModal(true)" style="flex: 1; height: 42px; justify-content: center;">
+                    Confirm
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 4. Global Toast Notifications Mount Point -->
+<div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>

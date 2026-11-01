@@ -1,0 +1,129 @@
+<!-- DEDICATED SYSTEM USERS & ACCESS CONTROL VIEW (Responsive: Desktop 2-Col Workstation / Tablet / Mobile Cards) -->
+<div id="view-users-page" class="view-page-container hidden">
+
+    <!-- Page Header Banner -->
+    <div class="page-view-header">
+        <div class="page-view-header-left">
+            <div class="page-view-icon-badge">
+                <i data-lucide="shield-check"></i>
+            </div>
+            <div>
+                <div class="page-view-title-row">
+                    <h2 class="page-view-heading">System Users &amp; Access Control</h2>
+                    <span class="count-badge" id="users-count-badge">0</span>
+                </div>
+                <p class="page-view-sub">Manage console administrators, operator credentials, and role-based security permissions.</p>
+            </div>
+        </div>
+        <div class="page-view-header-right">
+            <button class="btn btn-ghost btn-sm" onclick="loadSystemUsersList()" title="Refresh Users" style="display: inline-flex; align-items: center; gap: 6px;">
+                <i data-lucide="refresh-cw"></i>
+                <span>Refresh</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Security & Users KPI Metrics Row -->
+    <div class="users-kpi-row">
+        <div class="user-kpi-card">
+            <div class="user-kpi-icon-wrap kpi-blue">
+                <i data-lucide="users"></i>
+            </div>
+            <div class="user-kpi-info">
+                <span class="user-kpi-label">Total Accounts</span>
+                <span class="user-kpi-val" id="kpi-total-users">0</span>
+            </div>
+        </div>
+        <div class="user-kpi-card">
+            <div class="user-kpi-icon-wrap kpi-purple">
+                <i data-lucide="shield-alert"></i>
+            </div>
+            <div class="user-kpi-info">
+                <span class="user-kpi-label">Administrators</span>
+                <span class="user-kpi-val" id="kpi-admin-users">0</span>
+            </div>
+        </div>
+        <div class="user-kpi-card">
+            <div class="user-kpi-icon-wrap kpi-green">
+                <i data-lucide="user-check"></i>
+            </div>
+            <div class="user-kpi-info">
+                <span class="user-kpi-label">Active Session</span>
+                <span class="user-kpi-val" id="kpi-current-user-name" style="font-size: 14px;">User</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2-Column Workstation Grid: Left = Users Directory, Right = Create Account Form -->
+    <div class="users-workstation-grid">
+        <!-- Left: Registered Accounts List -->
+        <div class="users-list-card">
+            <div class="users-section-header">
+                <div class="users-section-title">
+                    <i data-lucide="users" style="color: var(--blue);"></i>
+                    <span>Registered System Accounts</span>
+                </div>
+                <span class="badge-subtle" id="users-active-count-label" style="font-size: 11.5px; font-weight: 500; color: var(--text-muted); background: var(--bg-muted); border: 1px solid var(--border-subtle); padding: 2px 8px; border-radius: 999px;">
+                    0 Accounts
+                </span>
+            </div>
+
+            <!-- Empty State -->
+            <div id="users-empty-state" class="empty-state hidden">
+                <div class="empty-state-icon"><i data-lucide="user-x"></i></div>
+                <div class="empty-state-title">No Users Found</div>
+                <div class="empty-state-sub">Create your first user account using the form.</div>
+            </div>
+
+            <!-- Dynamic User Cards List -->
+            <div id="system-users-list" class="system-users-list">
+                <!-- Injected dynamically via JS -->
+            </div>
+        </div>
+
+        <!-- Right: Create New User Account Panel -->
+        <div class="create-user-card" id="create-user-card">
+            <!-- Mobile Collapsible Header (tappable on mobile, static on desktop/tablet) -->
+            <div class="create-user-header" id="add-user-header" onclick="toggleAddUserCollapse()">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <div class="create-user-icon-badge">
+                        <i data-lucide="user-plus"></i>
+                    </div>
+                    <div class="create-user-title">Create User Account</div>
+                </div>
+                <i data-lucide="chevron-down" id="add-user-chevron" class="mobile-only-chevron"></i>
+            </div>
+
+            <!-- Form Body -->
+            <div class="create-user-body" id="add-user-body">
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label for="page-reg-username" class="input-label">Username</label>
+                    <input type="text" id="page-reg-username" class="modal-input" placeholder="Enter username" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false">
+                </div>
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label for="page-reg-email" class="input-label">Email (Optional)</label>
+                    <input type="email" id="page-reg-email" class="modal-input" placeholder="email@example.com" autocomplete="email" autocapitalize="none">
+                </div>
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="page-reg-password" class="input-label">Password</label>
+                    <div class="input-toggle-wrap">
+                        <input type="password" id="page-reg-password" class="modal-input" placeholder="••••••••" autocomplete="new-password" onkeydown="if(event.key==='Enter') performPageRegister()">
+                        <button type="button" class="btn-pwd-toggle" onclick="togglePasswordVisibility('page-reg-password', this)" title="Show/Hide password">
+                            <i data-lucide="eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <button class="btn btn-primary" id="page-reg-btn" onclick="performPageRegister()" style="width: 100%; height: 44px; justify-content: center; font-size: 13.5px; font-weight: 600;">
+                    <span class="btn-spinner"></span>
+                    <span class="btn-label"><i data-lucide="user-plus"></i> Create User</span>
+                </button>
+
+                <div class="admin-privilege-note">
+                    <i data-lucide="shield" style="color: var(--blue); flex-shrink: 0; width: 16px; height: 16px;"></i>
+                    <span>Admin privileges required to create or remove user accounts. Regular members have access to the floor plan and monitoring console.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

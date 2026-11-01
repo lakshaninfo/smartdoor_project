@@ -1,0 +1,83 @@
+<!-- LIGHT LEFT SIDEBAR NAVIGATION MENU BAR (Desktop 210px) -->
+<aside class="app-sidebar" id="app-sidebar">
+    <!-- Brand Logo + Fold/Unfold Toggle (ChatGPT-style placement) -->
+    <div class="sidebar-brand">
+        <div class="sidebar-brand-left">
+            <div class="sidebar-brand-icon">
+                <i data-lucide="shield-check"></i>
+            </div>
+            <div class="sidebar-brand-text">
+                <h1 class="sidebar-brand-title" style="margin: 0; font-size: inherit; font-weight: inherit; line-height: inherit;">SmartDoor</h1>
+                <div class="sidebar-brand-sub">Access Control</div>
+            </div>
+        </div>
+        <button type="button" class="btn-fold-sidebar" id="btn-sidebar-fold" onclick="toggleSidebarCollapse()" title="Fold Sidebar (Ctrl+\)">
+            <i data-lucide="panel-left"></i>
+        </button>
+    </div>
+
+    <!-- Main Navigation -->
+    <nav class="sidebar-nav">
+        <div class="nav-section-label">Menu</div>
+
+        <button class="nav-item active" id="nav-dashboard" aria-current="page" onclick="switchMainTab('dashboard')" title="Campus 3D Dashboard (D)" data-tooltip="Campus 3D">
+            <i data-lucide="building-2"></i>
+            <span>Dashboard</span>
+            <span class="nav-shortcut-hint">D</span>
+        </button>
+
+        <button class="nav-item" id="nav-floorplan" onclick="switchMainTab('floorplan')" title="Floor Plan Blueprint (F)" data-tooltip="Floor Plan">
+            <i data-lucide="layout-grid"></i>
+            <span>Floor Plan</span>
+            <span class="nav-shortcut-hint">F</span>
+        </button>
+
+        <button class="nav-item" id="nav-activity" onclick="switchMainTab('activity')" title="Analytics (A)" data-tooltip="Analytics">
+            <i data-lucide="bar-chart-3"></i>
+            <span>Analytics</span>
+            <span class="nav-shortcut-hint">A</span>
+        </button>
+
+        <button class="nav-item" id="nav-logs" onclick="switchMainTab('logs')" title="Access Logs (L)" data-tooltip="Access Logs">
+            <i data-lucide="file-text"></i>
+            <span>Access Logs</span>
+            <span class="nav-shortcut-hint">L</span>
+        </button>
+
+        <button class="nav-item" id="nav-devices" onclick="switchMainTab('devices')" title="Connected Devices (C)" data-tooltip="Connected Devices">
+            <i data-lucide="cpu"></i>
+            <span>Connected Devices</span>
+            <span class="nav-count-badge" id="sidebar-devices-count">8</span>
+        </button>
+
+        <button class="nav-item" id="nav-users" onclick="switchMainTab('users')" title="System Users (U)" data-tooltip="System Users">
+            <i data-lucide="users"></i>
+            <span>System Users</span>
+            <span class="nav-shortcut-hint">U</span>
+        </button>
+
+        <button class="nav-item nav-item-admin {% if not user.is_superuser %}hidden{% endif %}" id="nav-database" onclick="switchMainTab('database')" title="Database Studio (M)" data-tooltip="Database Studio">
+            <i data-lucide="database"></i>
+            <span>Database Studio</span>
+            <span class="nav-shortcut-hint">M</span>
+        </button>
+    </nav>
+
+    <!-- Bottom Section: User Auth shortcut -->
+    <div class="sidebar-bottom">
+        <div class="nav-section-label">Account</div>
+        <button class="nav-item" id="nav-account" onclick="switchMainTab('account')" title="My Profile (P)" data-tooltip="My Profile">
+            <i data-lucide="user"></i>
+            <span>My Profile</span>
+            <span class="nav-shortcut-hint">P</span>
+        </button>
+        <button class="nav-item" onclick="openUserModal('login')" title="Switch Account" data-tooltip="Switch Account">
+            <i data-lucide="key-round"></i>
+            <span>Switch Account</span>
+        </button>
+        <button class="nav-item item-danger" onclick="performLogout()" title="Sign Out" data-tooltip="Sign Out">
+            <i data-lucide="log-out"></i>
+            <span>Sign Out</span>
+        </button>
+    </div>
+</aside>

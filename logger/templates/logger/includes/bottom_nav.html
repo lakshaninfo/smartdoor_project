@@ -1,0 +1,35 @@
+<!-- MOBILE FIXED BOTTOM NAVIGATION BAR (Visible Only on Mobile Phones via CSS Media Query) -->
+<nav class="mobile-bottom-nav" id="app-bottom-nav" aria-label="Primary navigation">
+    <button class="mobile-nav-tab active" id="mob-nav-dashboard" aria-label="Campus 3D Dashboard" aria-current="page" onclick="switchMainTab('dashboard')">
+        <div class="nav-tab-icon"><i data-lucide="building-2"></i></div>
+        <span class="nav-tab-label">Campus 3D</span>
+    </button>
+    <button class="mobile-nav-tab" id="mob-nav-floorplan" onclick="switchMainTab('floorplan')" aria-label="Floor Plan Blueprint">
+        <div class="nav-tab-icon"><i data-lucide="layout-grid"></i></div>
+        <span class="nav-tab-label">Floor Plan</span>
+    </button>
+    <button class="mobile-nav-tab" id="mob-nav-activity" onclick="switchMainTab('activity')" aria-label="Access Analytics">
+        <div class="nav-tab-icon"><i data-lucide="bar-chart-3"></i></div>
+        <span class="nav-tab-label">Analytics</span>
+    </button>
+    <button class="mobile-nav-tab" id="mob-nav-logs" onclick="switchMainTab('logs')" aria-label="Access Logs">
+        <div class="nav-tab-icon"><i data-lucide="file-text"></i></div>
+        <span class="nav-tab-label">Logs</span>
+    </button>
+    <button class="mobile-nav-tab" id="mob-nav-devices" onclick="switchMainTab('devices')" aria-label="Connected Devices">
+        <div class="nav-tab-icon"><i data-lucide="cpu"></i></div>
+        <span class="nav-tab-label">Devices</span>
+    </button>
+    <button class="mobile-nav-tab" id="mob-nav-users" onclick="switchMainTab('users')" aria-label="System Users">
+        <div class="nav-tab-icon"><i data-lucide="users"></i></div>
+        <span class="nav-tab-label">Users</span>
+    </button>
+    <button class="mobile-nav-tab {% if not user.is_superuser %}hidden{% endif %}" id="mob-nav-database" onclick="switchMainTab('database')" aria-label="Database Studio">
+        <div class="nav-tab-icon"><i data-lucide="database"></i></div>
+        <span class="nav-tab-label">Database</span>
+    </button>
+    <button class="mobile-nav-tab" id="mob-nav-account" onclick="switchMainTab('account')" aria-label="Account Profile">
+        <div class="nav-tab-icon"><i data-lucide="user-circle-2"></i></div>
+        <span class="nav-tab-label">Account</span>
+    </button>
+</nav>

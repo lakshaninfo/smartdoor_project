@@ -1,0 +1,369 @@
+<!-- DEDICATED FLOOR PLAN WORKSTATION VIEW (3D Isometric View & 2D Blueprint) -->
+<div id="view-floorplan-page" class="view-page-container hidden" data-view-mode="3d">
+
+    <!-- Floor Plan Workspace Card -->
+    <div class="canvas-card" id="canvas-card-wrapper-fp">
+        <!-- Floor Plan Toolbar -->
+        <div class="canvas-toolbar">
+            <!-- Left: Back to Campus Map & Hierarchical Building/Floor Selector -->
+            <div class="canvas-toolbar-left">
+                <!-- Back to Campus 3D Dashboard Button -->
+                <button type="button" class="btn-breadcrumb-node btn-back-campus" onclick="switchMainTab('dashboard')" title="Back to Campus 3D Overview">
+                    <i data-lucide="arrow-left" style="width: 14px; height: 14px; color: var(--blue);"></i>
+                    <span>Campus Map</span>
+                </button>
+                
+                <span class="breadcrumb-chevron"><i data-lucide="chevron-right"></i></span>
+                
+                <!-- Building Dropdown -->
+                <div class="dropdown-wrapper">
+                    <button type="button" class="btn-breadcrumb-dropdown" id="btn-building-dropdown" onclick="toggleBuildingDropdown(event)" title="Switch Building">
+                        <i data-lucide="building-2" style="width: 13px; height: 13px; color: var(--blue); flex-shrink: 0;"></i>
+                        <span id="breadcrumb-building-name" class="breadcrumb-text-truncate">Logistics Center</span>
+                        <i data-lucide="chevron-down" style="width: 12px; height: 12px; opacity: 0.6; flex-shrink: 0;"></i>
+                    </button>
+                    <div class="custom-dropdown-menu hidden" id="building-select-menu">
+                        <!-- Injected dynamically via JS with Delete Building option -->
+                    </div>
+                </div>
+
+                <span class="breadcrumb-chevron"><i data-lucide="chevron-right"></i></span>
+
+                <!-- Floor Dropdown -->
+                <div class="dropdown-wrapper">
+                    <button type="button" class="btn-breadcrumb-dropdown" id="btn-floor-dropdown" onclick="toggleFloorDropdown(event)" title="Switch Floor">
+                        <i data-lucide="layers" style="width: 13px; height: 13px; color: var(--blue); flex-shrink: 0;"></i>
+                        <span id="breadcrumb-floor-name" class="breadcrumb-text-truncate">Ground Floor (GF)</span>
+                        <i data-lucide="chevron-down" style="width: 12px; height: 12px; opacity: 0.6; flex-shrink: 0;"></i>
+                    </button>
+                    <div class="custom-dropdown-menu hidden" id="floor-select-menu">
+                        <!-- Injected dynamically via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center: Sub-View Mode Switcher (3D Isometric vs 2D Blueprint) -->
+            <div class="canvas-toolbar-center">
+                <div class="segmented-capsule-track" id="fp-subview-selector">
+                    <button type="button" class="segmented-capsule-btn active" id="btn-fp-sub-3d" onclick="setFloorPlanSubView('3d')" title="3D Interactive Floor Plan">
+                        <i data-lucide="box"></i> <span class="tb-label">3D View</span>
+                    </button>
+                    <button type="button" class="segmented-capsule-btn" id="btn-fp-sub-2d" onclick="setFloorPlanSubView('2d')" title="2D Blueprint Editor">
+                        <i data-lucide="pencil-ruler"></i> <span class="tb-label">2D Blueprint</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right: Sub-View Specific Controls & Actions -->
+            <div class="canvas-toolbar-right">
+                <!-- 3D Subview Controls -->
+                <div class="toolbar-actions-cluster" id="toolbar-actions-fp-3d">
+                    <div class="stage-camera-bar" id="fp-camera-bar" style="position: static; margin-right: 6px;">
+                        <button type="button" class="stage-cam-btn on" data-v="iso" onclick="setFp3dCameraView('iso')">Isometric</button>
+                        <button type="button" class="stage-cam-btn" data-v="top" onclick="setFp3dCameraView('top')">Top</button>
+                        <button type="button" class="stage-cam-btn" data-v="side" onclick="setFp3dCameraView('side')">Side</button>
+                        <button type="button" class="stage-cam-btn" id="ta" onclick="toggleFp3dAutoRotate()">Auto-rotate</button>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline" id="tl" onclick="toggleFpLabels()" title="Toggle Room &amp; Sensor Labels">
+                        <i data-lucide="tag"></i> <span class="tb-label">Labels</span>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline" onclick="openCampusManagerModal()" title="Manage Floors &amp; Buildings">
+                        <i data-lucide="layers"></i> <span class="tb-label">Manage Floors</span>
+                    </button>
+                </div>
+
+                <!-- 2D Subview Controls -->
+                <div class="toolbar-actions-cluster hidden" id="toolbar-actions-fp-2d">
+                    <div class="segmented-capsule-track" id="blueprint-mode-selector">
+                        <button type="button" class="segmented-capsule-btn active" id="btn-mode-monitor" onclick="setMode('monitor')" title="Monitor Mode">
+                            <i data-lucide="eye"></i> <span class="tb-label">Monitor</span>
+                        </button>
+                        <button type="button" class="segmented-capsule-btn" id="btn-mode-edit" onclick="setMode('edit')" title="Edit Layout">
+                            <i data-lucide="edit-3"></i> <span class="tb-label">Edit</span>
+                        </button>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline" onclick="openCampusManagerModal()" title="Manage Floors &amp; Buildings">
+                        <i data-lucide="layers"></i> <span class="tb-label">Manage Floors</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dedicated Designer Ribbon Strip (Visible only in 2D Edit Mode) -->
+        <div id="designer-toolbar" class="designer-ribbon hidden">
+            <!-- Tool Group 1: History -->
+            <div class="designer-tool-group">
+                <button type="button" class="designer-tool-btn designer-btn-icon" id="btn-undo" onclick="undoLayout()" title="Undo (Ctrl+Z)" disabled>
+                    <i data-lucide="undo-2"></i>
+                </button>
+                <button type="button" class="designer-tool-btn designer-btn-icon" id="btn-redo" onclick="redoLayout()" title="Redo (Ctrl+Y)" disabled>
+                    <i data-lucide="redo-2"></i>
+                </button>
+            </div>
+
+            <div class="designer-divider"></div>
+
+            <!-- Tool Group 2: Room Shapes -->
+            <div class="designer-tool-group">
+                <button type="button" class="designer-tool-btn" onclick="addRoom('rect')" title="Add Room">
+                    <i data-lucide="square"></i> <span>Room</span>
+                </button>
+                <button type="button" class="designer-tool-btn" onclick="addRoom('l-shape')" title="Add L-Shape Room">
+                    <i data-lucide="layout-grid"></i> <span>L-Room</span>
+                </button>
+                <button type="button" class="designer-tool-btn" id="btn-tool-draw" onclick="startCustomDraw()" title="Draw Custom Shape">
+                    <i data-lucide="pen-tool"></i> <span>Draw</span>
+                </button>
+            </div>
+
+            <div class="designer-divider"></div>
+
+            <!-- Tool Group 3: Hardware Sensors -->
+            <div class="designer-tool-group">
+                <button type="button" class="designer-tool-btn" onclick="addDoor()" title="Add Door Sensor">
+                    <i data-lucide="door-open"></i> <span>Door</span>
+                </button>
+                <button type="button" class="designer-tool-btn" onclick="addWindow()" title="Add Window Sensor">
+                    <i data-lucide="app-window"></i> <span>Window</span>
+                </button>
+            </div>
+
+            <!-- Custom draw in-progress toolbar -->
+            <div id="draw-actions-toolbar" class="draw-actions-capsule hidden">
+                <span class="draw-actions-status">
+                    <span class="draw-live-dot"></span>
+                    <span>Drawing</span>
+                </span>
+                <div class="draw-actions-btns">
+                    <button type="button" class="draw-micro-btn draw-btn-undo" onclick="undoCustomPoint()" id="btn-undo-point" title="Undo Point">
+                        <i data-lucide="undo-2"></i>
+                    </button>
+                    <button type="button" class="draw-micro-btn draw-btn-finish" onclick="finishCustomDraw()" title="Finish Shape">
+                        <i data-lucide="check"></i>
+                    </button>
+                    <button type="button" class="draw-micro-btn draw-btn-cancel" onclick="cancelCustomDraw()" title="Cancel Draw">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tool Group 4: Layout Actions -->
+            <div class="designer-tool-group designer-actions-right">
+                <button type="button" id="btn-save-layout" class="designer-tool-btn designer-action-btn btn-save" onclick="savePlanManual()" title="Save Layout">
+                    <i data-lucide="save"></i> <span>Save</span>
+                </button>
+                <button type="button" id="btn-load-demo" class="designer-tool-btn designer-action-btn btn-template" onclick="loadPresetPlan()" title="Load Sample Template">
+                    <i data-lucide="file-plus"></i> <span>Template</span>
+                </button>
+                <button type="button" id="btn-clear-layout" class="designer-tool-btn designer-action-btn btn-clear" onclick="clearPlan()" title="Clear Layout">
+                    <i data-lucide="trash-2"></i> <span>Clear</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Designer Help Banner (Edit mode only) -->
+        <div class="help-banner hidden" id="designer-help">
+            <i data-lucide="info"></i>
+            <span>Drag rooms to reposition, drag blue corner handles to resize. Select any fixture to inspect properties.</span>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- SUBVIEW 1: 3D ISOMETRIC FLOOR PLAN STAGE       -->
+        <!-- ============================================== -->
+        <div class="campus-3d-wrapper" id="fp-3d-wrapper">
+            <div class="stage" id="stage">
+                <!-- Vertical Level Selector (GF, 1F, 2F) -->
+                <div class="lv" id="lv"></div>
+
+
+
+                <!-- 3D Transform Scene Root (preserve-3d) -->
+                <div id="scene">
+                    <div id="interior" style="display: block;"></div>
+                </div>
+
+                <!-- Floating Zoom & Fit Controls for Floor Plan 3D -->
+                <div class="canvas-grouped-pill" id="fp3d-zoom-pill" onpointerdown="event.stopPropagation()">
+                    <button type="button" class="btn-zoom-icon" onclick="fitFp3DView()" title="Fit to Screen"><i data-lucide="maximize-2"></i></button>
+                    <div class="btn-zoom-sep"></div>
+                    <button type="button" class="btn-zoom-icon" id="btn-fp3d-zoom-out" onclick="zoomFp3D(-0.15)" title="Zoom Out"><i data-lucide="minus"></i></button>
+                    <span id="fp3d-zoom-level-text" class="zoom-level-label">100%</span>
+                    <button type="button" class="btn-zoom-icon" id="btn-fp3d-zoom-in" onclick="zoomFp3D(0.15)" title="Zoom In"><i data-lucide="plus"></i></button>
+                    <div class="btn-zoom-sep"></div>
+                    <button type="button" class="btn-zoom-icon" onclick="resetFp3DZoom()" title="Reset View"><i data-lucide="locate-fixed"></i></button>
+                </div>
+
+                <!-- Quick Fade Transition Veil Overlay -->
+                <div class="veil" id="veil"></div>
+
+                <!-- Interactive Context Hint (Bottom Left) -->
+                <div class="hint" id="hint">Drag to rotate • Scroll to zoom • Pick a floor on the left • Click zone for details</div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- SUBVIEW 2: 2D FLOOR PLAN BLUEPRINT WORKSPACE   -->
+        <!-- ============================================== -->
+        <div class="svg-container hidden" id="blueprint-svg-container" style="position: relative;">
+            <!-- Elevator Floor Selector Rail -->
+            <div class="elevator-floor-rail" id="elevator-floor-rail" title="Elevator Floor Selector">
+                <div class="elevator-rail-header">
+                    <i data-lucide="chevrons-up-down"></i>
+                    <span>FLOOR</span>
+                </div>
+                <div class="elevator-buttons-list" id="elevator-buttons-list"></div>
+                <button type="button" class="btn-elevator-add" onclick="openAddFloorModal()" title="Add New Floor to Building">
+                    <i data-lucide="plus"></i>
+                </button>
+            </div>
+
+            <!-- Floating Zoom & Fit Controls -->
+            <div class="canvas-grouped-pill">
+                <button class="btn-zoom-icon" onclick="fitCanvasToRooms()" title="Fit to Screen"><i data-lucide="maximize-2"></i></button>
+                <div class="btn-zoom-sep"></div>
+                <button class="btn-zoom-icon" id="btn-zoom-out" onclick="zoomCanvas(-0.15)" title="Zoom Out"><i data-lucide="minus"></i></button>
+                <span id="zoom-level-text" class="zoom-level-label">100%</span>
+                <button class="btn-zoom-icon" id="btn-zoom-in" onclick="zoomCanvas(0.15)" title="Zoom In"><i data-lucide="plus"></i></button>
+                <div class="btn-zoom-sep"></div>
+                <button class="btn-zoom-icon" onclick="resetZoomPan()" title="Reset View"><i data-lucide="locate-fixed"></i></button>
+            </div>
+
+            <!-- Floating Sensor Tooltip Popover -->
+            <div class="sensor-tooltip-popover" id="sensor-tooltip-popover">
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px;">
+                    <span class="tooltip-sensor-name" id="tt-sensor-name" style="font-weight: 600;">Sensor</span>
+                    <span class="live-pulse-dot" id="tt-pulse-dot"></span>
+                </div>
+                <div style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); margin-bottom: 4px;" id="tt-sensor-mac">--</div>
+                <div style="display: flex; align-items: center; justify-content: space-between; font-size: 11.5px; gap: 6px;">
+                    <span id="tt-sensor-state" style="font-weight: 600;">--</span>
+                    <span id="tt-sensor-battery" style="font-weight: 500;">--</span>
+                </div>
+                <div style="font-size: 10px; color: var(--text-muted); margin-top: 3px;" id="tt-sensor-time">--</div>
+            </div>
+
+            <!-- Welcome empty-state hint -->
+            <div id="canvas-empty-state" class="hidden canvas-empty-overlay">
+                <div class="canvas-empty-card">
+                    <div class="canvas-empty-icon">
+                        <i data-lucide="map" style="width: 22px; height: 22px;"></i>
+                    </div>
+                    <h4 class="canvas-empty-title">Empty Floor Plan</h4>
+                    <p class="canvas-empty-text">No layout has been designed for this floor yet.</p>
+                    <div class="canvas-empty-actions">
+                        <button class="btn btn-primary" onclick="setMode('edit')"><i data-lucide="edit-3"></i> Design Layout</button>
+                        <button class="btn btn-outline" onclick="loadPresetPlanQuick()"><i data-lucide="file-plus"></i> Load Template</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Floor Plan SVG Blueprint -->
+            <svg id="floorplan-svg" viewBox="0 0 800 500">
+                <rect width="100%" height="100%" class="floorplan-base-rect grid-bg" fill="#ffffff"/>
+                <g id="viewport-group">
+                    <g id="rooms-group"></g>
+                    <g id="windows-group"></g>
+                    <g id="doors-group"></g>
+                    <g id="drawing-preview-group"></g>
+                </g>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Mobile Drawer Backdrop Overlay -->
+    <div class="mobile-drawer-backdrop hidden" id="mobile-drawer-backdrop" onclick="toggleMobileSensorDrawer(false)"></div>
+
+    <!-- RIGHT SIDEBAR / MOBILE BOTTOM SHEET PANEL -->
+    <div class="right-sidebar-panel" id="right-sidebar-panel">
+        <div class="sheet-drag-header" id="mobile-drawer-handle" onclick="toggleMobileSensorDrawer()">
+            <div class="sheet-drag-pill"></div>
+            <div class="sheet-header-row">
+                <div class="sheet-title-col">
+                    <i data-lucide="activity" id="mob-drawer-icon" style="color: var(--blue); width: 18px; height: 18px;"></i>
+                    <span id="mob-sensor-title">Sensors (<span id="mob-sensor-count">0</span>)</span>
+                </div>
+                <div class="sheet-badge-col">
+                    <span class="mobile-sheet-badge" id="mob-sensor-status-badge">
+                        <span class="mobile-live-dot" id="mob-sheet-pulse-dot" style="width: 7px; height: 7px;"></span>
+                        <span id="mob-sheet-status-text">SECURED</span>
+                    </span>
+                    <i data-lucide="chevron-up" id="mob-drawer-chevron" class="sheet-chevron"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- 1. LIVE MONITOR: Active Sensors Registry -->
+        <div class="bottom-card" id="right-sensors-sidebar">
+            <h3 class="sidebar-panel-header" style="margin-bottom: 8px;">
+                <span><i data-lucide="activity" style="color: var(--blue);"></i> Sensors</span>
+                <div style="display: flex; align-items: center; gap: 6px;">
+                    <span class="count-badge" id="right-sensor-count-badge">0</span>
+                    <span class="uptime-badge" id="right-uptime-val" title="Console Session Uptime" style="font-size: 10.5px; font-weight: 600; padding: 2px 6px; border-radius: 999px; background: var(--blue-alpha); color: var(--blue); font-variant-numeric: tabular-nums;">00:00:00</span>
+                </div>
+            </h3>
+
+            <!-- Scope Filter Pill Tabs -->
+            <div class="sensor-scope-tabs" id="sensor-scope-tabs">
+                <button type="button" class="sensor-scope-btn active" id="btn-scope-floor" onclick="setSensorScope('floor')">
+                    <span>This Floor</span>
+                </button>
+                <button type="button" class="sensor-scope-btn" id="btn-scope-bldg" onclick="setSensorScope('building')">
+                    <span>This Building</span>
+                </button>
+                <button type="button" class="sensor-scope-btn" id="btn-scope-campus" onclick="setSensorScope('campus')">
+                    <span>All Campus</span>
+                </button>
+            </div>
+
+            <!-- Empty state for sensor sidebar -->
+            <div id="registry-empty-state" class="empty-state">
+                <div class="empty-state-icon">
+                    <i data-lucide="wifi-off"></i>
+                </div>
+                <div class="empty-state-title" id="registry-empty-title">No Active Sensors</div>
+                <div class="empty-state-sub" id="registry-empty-sub">Connected sensors will appear here automatically.</div>
+            </div>
+
+            <div class="device-badge-grid" id="registry-list"></div>
+
+            <!-- Last Event Widget -->
+            <div class="right-last-event-widget" id="right-last-event-widget">
+                <div class="right-widget-label">
+                    <i data-lucide="history"></i>
+                    <span>Last Security Event</span>
+                </div>
+                <div class="right-widget-door-name" id="last-event-door">None logged yet</div>
+                <div class="right-widget-time" id="last-event-time">--</div>
+            </div>
+        </div>
+
+        <!-- 2. EDIT MODE: Selected Element Properties Inspector -->
+        <div class="bottom-card hidden" id="properties-card">
+            <div class="prop-header">
+                <span class="prop-title"><i data-lucide="sliders" style="color: var(--blue);"></i> Properties</span>
+                <button type="button" class="btn btn-ghost btn-sm btn-icon-only" onclick="selectElement(null)" title="Close Inspector">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <div id="properties-content" class="prop-content"></div>
+            <div id="properties-footer" class="prop-footer"></div>
+        </div>
+
+        <!-- 3. Edit Mode Hint -->
+        <div class="bottom-card hidden" id="properties-placeholder-card">
+            <div class="prop-header">
+                <span class="prop-title"><i data-lucide="sliders" style="color: var(--blue);"></i> Inspector</span>
+            </div>
+            <div class="prop-content" style="align-items: center; justify-content: center;">
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <i data-lucide="mouse-pointer-click"></i>
+                    </div>
+                    <div class="empty-state-title">Inspector</div>
+                    <div class="empty-state-sub">Click or tap any room, door, or window to edit its properties.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

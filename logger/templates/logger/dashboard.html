@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="SmartDoor">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#2563eb">
+    <link rel="manifest" href="/manifest.json">
+    <title>Smart Access Control - Security Console</title>
+    
+    <!-- Premium Modern Typography & Lucide Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Native CSS Design System with Comprehensive Media Queries (Desktop, Tablet, Mobile) -->
+    {% include 'logger/includes/header_styles.html' %}
+</head>
+<body>
+
+    <!-- Adaptive Sidebar Navigation (Desktop 220px / Tablet 68px Icon-Rail / Hidden on Mobile) -->
+    {% include 'logger/includes/sidebar.html' %}
+
+    <!-- Main Application Workspace Shell -->
+    <div class="main-wrapper" id="main-app-wrapper">
+        <!-- Responsive Topbar Header -->
+        {% include 'logger/includes/topbar.html' %}
+
+        <!-- Single-Screen Views Container -->
+        <main class="page-content" id="main-page-content">
+            <!-- 1. Campus 3D Building Map Dashboard -->
+            {% include 'logger/includes/view_dashboard.html' %}
+
+            <!-- 2. Dedicated Floor Plan Workstation (3D Isometric & 2D Blueprint) -->
+            {% include 'logger/includes/view_floorplan.html' %}
+
+            <!-- 3. Security Activity Analytics Overview -->
+            {% include 'logger/includes/view_activity.html' %}
+
+            <!-- 4. Dedicated Security Access Logs Table Page -->
+            {% include 'logger/includes/view_logs.html' %}
+
+            <!-- 5. Dedicated Connected Hardware Devices Page -->
+            {% include 'logger/includes/view_devices.html' %}
+
+            <!-- 6. User Account Management System Page -->
+            {% include 'logger/includes/view_users.html' %}
+
+            <!-- 7. Dedicated User Profile & Account Page -->
+            {% include 'logger/includes/view_account.html' %}
+
+            <!-- 8. Advanced Database Management Studio (Admin Only) -->
+            {% include 'logger/includes/view_database.html' %}
+        </main>
+
+        <!-- Native Mobile Bottom Navigation Bar (Visible only on mobile devices) -->
+        {% include 'logger/includes/bottom_nav.html' %}
+    </div>
+
+    <!-- Authentication & Action Confirmation Dialog Modals -->
+    {% include 'logger/includes/modals.html' %}
+
+    <!-- Unified Application JavaScript Engine -->
+    {% include 'logger/includes/scripts.html' %}
+
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!-- DEDICATED CONNECTED HARDWARE DEVICES MANAGEMENT VIEW (APPLE INSET POLISHED) -->
+<div id="view-devices-page" class="view-page-container hidden">
+    <div class="in-polished">
+
+        <!-- Page Header -->
+        <div class="ph">
+            <div>
+                <h1>Devices</h1>
+                <p id="devices-count-sub">0 sensors connected.</p>
+            </div>
+            <button type="button" class="btn soft" onclick="loadDatabaseDevicesList()"><i data-lucide="refresh-cw" class="ic"></i><span>Scan</span></button>
+        </div>
+
+        <!-- Hub Online Status Card -->
+        <div class="inset hub">
+            <span class="ico"><i data-lucide="cpu" class="ic"></i></span>
+            <span class="m">
+                <b>Hub online</b>
+                <span>Floor plan in sync · ESP32 Gateway Active</span>
+            </span>
+            <span class="pill"><i></i>Live</span>
+        </div>
+
+        <!-- Low Battery Warning Banner -->
+        <div id="devices-low-battery-banner" class="hidden">
+            <button type="button" class="note" onclick="filterDevicesView('low')">
+                <span class="ico warn" style="width: 36px; height: 36px;"><i data-lucide="alert-triangle" class="ic"></i></span>
+                <span id="low-battery-count-text">0 sensors with low battery</span>
+                <i data-lucide="chevron-right" class="ch"></i>
+            </button>
+        </div>
+
+        <!-- Segmented Filter Track (All | Low battery) -->
+        <div class="seg" id="devices-seg-filter" style="margin-bottom: 14px; max-width: 320px;">
+            <button type="button" role="tab" class="seg-btn active" id="dev-filter-all" aria-selected="true" onclick="filterDevicesView('all')">All</button>
+            <button type="button" role="tab" class="seg-btn" id="dev-filter-low" aria-selected="false" onclick="filterDevicesView('low')">Low battery</button>
+        </div>
+
+        <!-- Inset Grouped Device List -->
+        <div class="inset" id="db-devices-list">
+            <!-- Injected dynamically via loadDatabaseDevicesList() -->
+        </div>
+
+        <!-- Empty State Container -->
+        <div id="devices-empty-state" class="inset empty hidden">
+            <div class="ring"><i data-lucide="cpu" class="ic"></i></div>
+            <h3>No devices logged</h3>
+            <p>Sensors will appear here automatically when they ping the hub.</p>
+        </div>
+
+        <p class="foot" id="devices-footer-summary" style="margin-top: 12px;">Auto-syncs with floor plan telemetry</p>
+    </div>
+
+    <!-- Polished Device Detail Sheet Modal -->
+    <div class="modal-overlay hidden" id="device-sheet-overlay" onclick="if(event.target===this) closeDeviceDetailSheet()">
+        <div class="modal-dialog modal-card" id="device-sheet-card" style="max-width: 480px; border-radius: 24px; padding: 24px;">
+            <div id="device-sheet-content">
+                <!-- Dynamically populated via openDeviceDetailModal() -->
+            </div>
+        </div>
+    </div>
+</div>

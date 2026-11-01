@@ -1,0 +1,51 @@
+<!-- DEDICATED FULL-PAGE ACCESS LOG HISTORY VIEW (APPLE INSET POLISHED) -->
+<div id="view-logs-page" class="view-page-container hidden">
+    <div class="in-polished">
+
+        <!-- Page Header -->
+        <div class="ph">
+            <div>
+                <h1>Access Logs</h1>
+                <p>Every door and window event, newest first.</p>
+            </div>
+        </div>
+
+        <!-- Search Bar and Door Select Dropdown -->
+        <div class="tools">
+            <label class="search">
+                <i data-lucide="search" class="ic"></i>
+                <input id="activity-search-input" type="search" placeholder="Search door, device or status" value="" aria-label="Search" oninput="filterActivityTable()">
+            </label>
+            <select class="sel" id="door-filter-select" aria-label="Door" onchange="selectActivityDoorFilter(this.value, this.options[this.selectedIndex].text)">
+                <option value="">All doors</option>
+            </select>
+        </div>
+
+        <!-- Period Filter Segmented Capsule & Actions -->
+        <div class="tools">
+            <div class="seg" id="per" role="tablist" style="flex: 1; min-width: 240px;">
+                <button type="button" role="tab" class="seg-btn active" id="chip-filter-all" aria-selected="true" onclick="setDateFilter('all')">All time</button>
+                <button type="button" role="tab" class="seg-btn" id="chip-filter-today" aria-selected="false" onclick="setDateFilter('today')">Today</button>
+                <button type="button" role="tab" class="seg-btn" id="chip-filter-yesterday" aria-selected="false" onclick="setDateFilter('yesterday')">Yesterday</button>
+                <button type="button" role="tab" class="seg-btn" id="chip-filter-7days" aria-selected="false" onclick="setDateFilter('7days')">7 days</button>
+            </div>
+            <button type="button" class="btn soft" onclick="exportLogsToCSV()"><i data-lucide="download" class="ic"></i><span>Export</span></button>
+            <button type="button" class="btn soft" onclick="fetchDoorHistoryLogs(currentSelectedActivityMac)" aria-label="Refresh" style="padding: 0 14px;"><i data-lucide="refresh-cw" class="ic"></i></button>
+        </div>
+
+        <!-- Inset Grouped List of Doors and Access Events -->
+        <div class="inset" id="logs-table-body">
+            <!-- Dynamic door log items injected via fetchDoorHistoryLogs() -->
+        </div>
+
+        <!-- Empty State Container -->
+        <div id="activity-empty-state" class="inset empty hidden">
+            <div class="ring"><i data-lucide="search" class="ic"></i></div>
+            <h3>No activity found</h3>
+            <p>Try a different search or filter.</p>
+            <button type="button" class="btn" onclick="resetAllActivityFilters()">Show all activity</button>
+        </div>
+
+        <p class="foot" id="logs-footer-summary">Loading events...</p>
+    </div>
+</div>

@@ -1,0 +1,66 @@
+<!-- DEDICATED SECURITY ACTIVITY ANALYTICS VIEW (Apple Redesigned Architecture) -->
+<div id="view-activity-page" class="view-page-container hidden">
+    <div class="wrap">
+        <header class="act-header">
+            <h1>Activity</h1>
+            <div class="live"><i></i>Live</div>
+        </header>
+
+        <!-- Dynamic Scope Filter Segmented Bar -->
+        <div class="seg" id="scope" role="tablist" aria-label="Scope"></div>
+
+        <!-- Priority Security Alarm Banner -->
+        <div class="banner" id="banner" role="alert" hidden>
+            <i></i>
+            <span id="bt">1 alarm detected</span>
+            <button type="button" class="btn" id="rev">Review</button>
+        </div>
+
+        <div class="grid">
+            <!-- Left Column: Overview & Hourly Traffic Chart -->
+            <section class="card" aria-label="Overview">
+                <div class="stats">
+                    <div class="stat">
+                        <small>Events</small>
+                        <b id="s1">0</b>
+                    </div>
+                    <div class="stat r">
+                        <small>Open</small>
+                        <b id="s2">0</b>
+                    </div>
+                    <div class="stat">
+                        <small>Secured</small>
+                        <div class="ringw">
+                            <svg viewBox="0 0 46 46">
+                                <circle cx="23" cy="23" r="19" stroke="var(--act-fill)"/>
+                                <circle id="ring" cx="23" cy="23" r="19" stroke="var(--act-green)" stroke-dasharray="119.4" stroke-dashoffset="119.4" style="transition:stroke-dashoffset .8s cubic-bezier(.2,.8,.2,1)"/>
+                            </svg>
+                            <b id="s3" style="font-size:26px">0%</b>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="height:22px"></div>
+
+                <h2>Activity by hour</h2>
+                <p class="sub" id="csub">Loading traffic data...</p>
+
+                <!-- Interactive 12-Hour Traffic Chart -->
+                <div class="chart" id="chart" role="group" aria-label="Events per hour"></div>
+
+                <!-- Footnote Telemetry Insight -->
+                <p class="insight" id="ins"></p>
+            </section>
+
+            <!-- Right Column: Details Grouped List & Fast Actions -->
+            <aside class="card" aria-label="Details">
+                <div class="seg" id="tabs" role="tablist"></div>
+                <div class="list" id="list"></div>
+                <div class="actions">
+                    <button type="button" class="btn" onclick="switchMainTab('logs')">Open access logs</button>
+                    <button type="button" class="btn soft" id="exp" aria-label="Export CSV">Export</button>
+                </div>
+            </aside>
+        </div>
+    </div>
+</div>
